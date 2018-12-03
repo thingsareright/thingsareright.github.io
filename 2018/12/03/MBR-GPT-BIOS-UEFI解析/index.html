@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-12-03</span>
-            <span class="time">21:46:26</span>
+            <span class="time">21:57:35</span>
           </span>
           
         </div>
@@ -213,10 +213,10 @@
 <p>注：现在由于不知道什么原因，大家有的时候也把UEFI叫做BIOS，这里我们不这么叫，两个名词都是纯粹的。</p>
 <h2 id="3-BIOS"><a href="#3-BIOS" class="headerlink" title="3 BIOS"></a>3 BIOS</h2><p><strong>纯粹的BIOS</strong>与MBR<strong>一起</strong>才能完成系统启动流程，这一点至关重要。<strong>因为BIOS只能与MBR格式的硬盘提供的接口进行交互，这样才能完成下图所示的第二阶段</strong>。</p>
 <p>下面看一下它们二人怎么狼狈为奸的完成系统启动流程：</p>
-<p><img src="https://github.com/thingsareright/thingsareright.github.io/blob/master/picture/BIOS_MBR%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png?raw=true" alt="BIOS_MBR启动流程"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/BIOS_MBR%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png?raw=true" alt="BIOS_MBR启动流程"></p>
 <h2 id="4-UEFI"><a href="#4-UEFI" class="headerlink" title="4 UEFI"></a>4 UEFI</h2><p><strong>纯粹的UEFI标准程序只能与GPT格式的硬盘提供的接口交互。</strong></p>
 <p>下面来看一下纯粹的UEFI与GPT硬盘配合启动系统的流程。</p>
-<p><img src="https://github.com/thingsareright/thingsareright.github.io/blob/master/picture/UEFI%E4%B8%8EGPT%E9%85%8D%E5%90%88%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png?raw=true" alt="UEFI与GPT配合启动流程"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/UEFI%E4%B8%8EGPT%E9%85%8D%E5%90%88%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B.png?raw=true" alt="UEFI与GPT配合启动流程"></p>
 <h1 id="5-问答（后续不断补充）"><a href="#5-问答（后续不断补充）" class="headerlink" title="5 问答（后续不断补充）"></a>5 问答（后续不断补充）</h1><p>总算把这些讲完了，下面描述几个问题，也是我在理解上面的流程时遇到的。</p>
 <p>Q1. 为什么我的UEFI可以与MBR格式的硬盘配合启动OS？</p>
 <p>答：上面我所说的UEFI，准确的说是关闭了CSM（兼容性支持模块）的UEFI。而如果你的UEFI激活了CSM，那么它也可以在Part 4采用类似传统BIOS的模式来启动操作系统。</p>

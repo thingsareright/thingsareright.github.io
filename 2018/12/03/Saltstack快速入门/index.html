@@ -8,10 +8,10 @@
   <meta name="description" content="">
   <meta name="author" content="John Doe">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="Hexo">
+  <meta property="og:title" content="Saltstack快速入门">
   <meta property="og:description" content="">
   <meta property="og:site_name" content="Hexo">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
   <meta property="og:image" content="http://yoursite.com">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">无标题文章</p>
+          <p class="title">Saltstack快速入门</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -100,11 +100,19 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-12-03</span>
-            <span class="time">21:46:26</span>
+            <span class="time">21:57:35</span>
           </span>
           
         </div>
         <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/tags/运维笔记/">#运维笔记</a>
+
+
+          </div>
         
         <!-- Post Main Content -->
         <div class="post-content">
@@ -129,20 +137,18 @@
 </ol>
 <h2 id="实验过程1：让saltstack的master与minion端跑起来"><a href="#实验过程1：让saltstack的master与minion端跑起来" class="headerlink" title="实验过程1：让saltstack的master与minion端跑起来"></a>实验过程1：让saltstack的master与minion端跑起来</h2><p>实验环境：两台虚拟机A，B</p>
 <ol>
-<li><p>在A里yum安装salt-master与salt-minion，在B里安装salt-minion。这里我们把A当做主服务器，把B当做客户机，采用CS模式。</p>
-</li>
-<li><p>在A上启动salt-master</p>
-</li>
+<li>在A里yum安装salt-master与salt-minion，在B里安装salt-minion。这里我们把A当做主服务器，把B当做客户机，采用CS模式。</li>
+<li>在A上启动salt-master</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824697101.png?raw=true" alt="1543824697101"></p>
-<ol start="3">
+<ol>
 <li>配置A和B里的/etc/salt/minion文件，把master配置为主机A的IP地址，配置minion的ID（如果不配就是客户机的主机名）。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824972970.png?raw=true" alt="1543824972970"></p>
 <p>​    如果不配置id，在A上执行systemctl start salt-minion后悔在/etc/salt下生成一个minion_id的文件，里面的内容就是A的主机名。</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543825260320.png?raw=true" alt="1543825260320"></p>
 <p>注意，minion_id是salt-minion起来的时候先读的文件，会覆盖/etc/salt/minion中的配置。但是不知道怎么回事，我这里还是显示id是IP地址。而且，salt的传输是通过aes加密通信的，不必考虑泄密。</p>
-<ol start="4">
+<ol>
 <li>salt-minion首次启动时会在/etc.salt目录下生成pki目录，我们可以通过tree命令来查看pki目录：</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826012701.png?raw=true" alt="1543826012701"></p>
@@ -150,7 +156,7 @@
 <p>具体的公钥内容：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826093070.png?raw=true" alt="1543826093070"></p>
 <p>在salt-minion启动时会把公钥发给minion-master服务器，这里就是A。</p>
-<ol start="5">
+<ol>
 <li>同样的，在salt-master端也会生成这么一对公私钥，同时还会存储salt-minion发来的私钥。如下图：</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826246684.png?raw=true" alt="1543826246684"></p>
@@ -164,14 +170,14 @@
 <p>我们还可以在A中使用salt-key命令来查看master端存储的客户端密钥的状态：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826795629.png?raw=true" alt="1543826795629"></p>
 <p>可以看出A、B两台机器上安装的salt-minion端都处于预备阶段。</p>
-<ol start="6">
+<ol>
 <li>我们在A上执行”salt-key -a minion端id” 来进行客户端主机id的接受。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826974203.png?raw=true" alt="1543826974203"></p>
 <p>当然，此命令支持通配符，具体用法参看help。之后我们再执行此命令把192.168.43.103（A的IP地址）的ID也加进去。此时我们可以看到A的/etc/salt目录下的pki目录发生了变化：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827155854.png?raw=true" alt="1543827155854"></p>
 <p>此时A中客户端的两个公钥已经转移到minions目录下，而./pki/minion目录下有了master的密钥文件minion_master.pub，这个文件也在B上存在。这说明master把自己的公钥发送给了minion。到这时，master端与minion端就可以加密通信了，认证过程（交换公钥过程）结束。</p>
-<ol start="7">
+<ol>
 <li>接下来我们在A上执行 <strong>salt ‘*’ test.ping</strong> 命令，test是一个模块，ping是一个方法，‘’里面的目标，是master端来检查minion是否可以正常工作的。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827677454.png?raw=true" alt="1543827677454"></p>
