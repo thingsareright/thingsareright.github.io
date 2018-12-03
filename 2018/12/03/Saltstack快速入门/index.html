@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-12-03</span>
-            <span class="time">21:33:36</span>
+            <span class="time">21:46:26</span>
           </span>
           
         </div>
@@ -134,52 +134,52 @@
 <li><p>在A上启动salt-master</p>
 </li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543824697101.png" alt="1543824697101"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824697101.png?raw=true" alt="1543824697101"></p>
 <ol start="3">
 <li>配置A和B里的/etc/salt/minion文件，把master配置为主机A的IP地址，配置minion的ID（如果不配就是客户机的主机名）。</li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543824972970.png" alt="1543824972970"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824972970.png?raw=true" alt="1543824972970"></p>
 <p>​    如果不配置id，在A上执行systemctl start salt-minion后悔在/etc/salt下生成一个minion_id的文件，里面的内容就是A的主机名。</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543825260320.png" alt="1543825260320"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543825260320.png?raw=true" alt="1543825260320"></p>
 <p>注意，minion_id是salt-minion起来的时候先读的文件，会覆盖/etc/salt/minion中的配置。但是不知道怎么回事，我这里还是显示id是IP地址。而且，salt的传输是通过aes加密通信的，不必考虑泄密。</p>
 <ol start="4">
 <li>salt-minion首次启动时会在/etc.salt目录下生成pki目录，我们可以通过tree命令来查看pki目录：</li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826012701.png" alt="1543826012701"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826012701.png?raw=true" alt="1543826012701"></p>
 <p>可以看到生成了一个公钥（minion.pub）和一个私钥（minion.pem）。</p>
 <p>具体的公钥内容：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826093070.png" alt="1543826093070"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826093070.png?raw=true" alt="1543826093070"></p>
 <p>在salt-minion启动时会把公钥发给minion-master服务器，这里就是A。</p>
 <ol start="5">
 <li>同样的，在salt-master端也会生成这么一对公私钥，同时还会存储salt-minion发来的私钥。如下图：</li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826246684.png" alt="1543826246684"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826246684.png?raw=true" alt="1543826246684"></p>
 <p>minions_pre下存放的是还没有被salt-master管理的机器的公钥，pre表示预备阶段。这意味着如果你在salt-minion端配置文件里重新设置minion端id名称，那么就需要重新走一遍流程（把客户端minion_id文件删除后重新启动）。因为master就是根据id来管理机器的。</p>
 <p>为了验证此点，我们可以查看两个文件对应的md5sum值来确定客户端与master端的密钥文件是否一致。</p>
 <p>我们先查看A中/etc/salt/pki/master/minions_pre目录下的192.168.43.107（B的IP地址）文件：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826609162.png" alt="1543826609162"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826609162.png?raw=true" alt="1543826609162"></p>
 <p>再来查看B中的/etc/salt/minion/minion.pub文件的md5sum值：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826696875.png" alt="1543826696875"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826696875.png?raw=true" alt="1543826696875"></p>
 <p>二者的md5sum值完全相等。</p>
 <p>我们还可以在A中使用salt-key命令来查看master端存储的客户端密钥的状态：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826795629.png" alt="1543826795629"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826795629.png?raw=true" alt="1543826795629"></p>
 <p>可以看出A、B两台机器上安装的salt-minion端都处于预备阶段。</p>
 <ol start="6">
 <li>我们在A上执行”salt-key -a minion端id” 来进行客户端主机id的接受。</li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543826974203.png" alt="1543826974203"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826974203.png?raw=true" alt="1543826974203"></p>
 <p>当然，此命令支持通配符，具体用法参看help。之后我们再执行此命令把192.168.43.103（A的IP地址）的ID也加进去。此时我们可以看到A的/etc/salt目录下的pki目录发生了变化：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543827155854.png" alt="1543827155854"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827155854.png?raw=true" alt="1543827155854"></p>
 <p>此时A中客户端的两个公钥已经转移到minions目录下，而./pki/minion目录下有了master的密钥文件minion_master.pub，这个文件也在B上存在。这说明master把自己的公钥发送给了minion。到这时，master端与minion端就可以加密通信了，认证过程（交换公钥过程）结束。</p>
 <ol start="7">
 <li>接下来我们在A上执行 <strong>salt ‘*’ test.ping</strong> 命令，test是一个模块，ping是一个方法，‘’里面的目标，是master端来检查minion是否可以正常工作的。</li>
 </ol>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543827677454.png" alt="1543827677454"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827677454.png?raw=true" alt="1543827677454"></p>
 <p>这说明这两者通信正常，注意是salt的通信协议的ping，不是ICMP的ping协议。</p>
 <p>我们可以在A上执行</p>
 <p><code>salt &#39;*&#39; cmd.run ‘命令’</code></p>
 <p>这条语句来远程操作minion机器。相当于直接在minion里执行cmd.run后的命令，如下图。</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543827899742.png" alt="1543827899742"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827899742.png?raw=true" alt="1543827899742"></p>
 <p>这就是salt上最简单的远程执行。</p>
 <h2 id="实验环境2：配置管理"><a href="#实验环境2：配置管理" class="headerlink" title="实验环境2：配置管理"></a>实验环境2：配置管理</h2><p>我们继续使用实验1的实验环境。</p>
 <p>saltstack有一个状态模块。对应每一台minion机器，salt-master根据一个以.sls结尾的YAML格式的文件来确定其状态。</p>
@@ -195,24 +195,24 @@
 </li>
 </ol>
 <p>那么我们在哪设置这些文件呢？在A的/etc/salt/master文件中查看file_roots配置即可。</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543829576184.png" alt="1543829576184"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543829576184.png?raw=true" alt="1543829576184"></p>
 <p>表示设置base环境下的sls文件存在/srv/salt目录下。然后重启salt-master目录使之生效。之后创建/srv/salt/目录。为方便起见，我们再创建/srv/salt/web目录。之后在/srv/salt/web/目录下创建apache.sls文件：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543830630088.png" alt="1543830630088"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543830630088.png?raw=true" alt="1543830630088"></p>
 <p>之后在master端（机器A）使用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt '*' state.sls web.apache</span><br></pre></td></tr></table></figure>
 <p>命令来执行此模块。执行此命令后，A上的salt-master会把apache.sls文件发给A，B上的salt-minion。我们在A和B的/var/cache/salt目录下可以查看到此文件：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543830937031.png" alt="1543830937031"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543830937031.png?raw=true" alt="1543830937031"></p>
 <p>我们还可以看到在A输出：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543831021978.png" alt="1543831021978"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543831021978.png?raw=true" alt="1543831021978"></p>
 <p>表示脚本通过A和B的客户端运行成功。在生产环境下，由于每台机器都有不同的对应模块，所以难以手工一个个敲命令。于是salt有一种对应关系模式，也是sls文件，来表示哪一个配置文件在哪台客户端机器上执行。我们在A上/etc/salt/master配置文件里通过state_top来查看这个映射关系对应的sls文件。这个sls文件放在base环境下（也就是刚才设置的base环境）。</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543831674391.png" alt="1543831674391"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543831674391.png?raw=true" alt="1543831674391"></p>
 <p>具体的说明看各个版本的master配置文件，这里不做过多的说明了。看一下一个top.sls的范本：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543831587255.png" alt="1543831587255"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543831587255.png?raw=true" alt="1543831587255"></p>
 <p>接着我们就可以在A上执行salt-master的高级状态：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543831731289.png" alt="1543831731289"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543831731289.png?raw=true" alt="1543831731289"></p>
 <p>这样就实现了运维配置化。</p>
 <p>不过一般我们一般先执行测试语句，测试无误后才执行语句：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543831888235.png" alt="1543831888235"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543831888235.png?raw=true" alt="1543831888235"></p>
 <p>我还得说一句，既然选择了salt来做配置管理，就不要自己手动改某一机器的值了。</p>
 
         </div>

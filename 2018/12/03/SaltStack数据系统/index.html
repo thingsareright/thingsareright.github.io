@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-12-03</span>
-            <span class="time">21:33:36</span>
+            <span class="time">21:46:26</span>
           </span>
           
         </div>
@@ -120,47 +120,47 @@
 <li>配置管理中使用。</li>
 </ol>
 <p>本质上说，grains里面存的是key-value键值对，我们可以在机器A上通过下面命令来查看某台机器的grains中所有的key值：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543840389680.png" alt="1543840389680"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543840389680.png?raw=true" alt="1543840389680"></p>
 <p>我们可以通过在A上执行下面的命令来查看某一台minion机器的所有数据项的键值组合：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543840446236.png" alt="1543840446236"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543840446236.png?raw=true" alt="1543840446236"></p>
 <p>我们可以通过在A上执行下列命令来查看某台机器某一item的值：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543840501835.png" alt="1543840501835"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543840501835.png?raw=true" alt="1543840501835"></p>
 <p>我们可以在A上使用下列命令来进行目标选择：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543840600091.png" alt="1543840600091"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543840600091.png?raw=true" alt="1543840600091"></p>
 <p>这条命令选择了所有os为CentOS的minion的id。</p>
 <h2 id="如何自定义grains-item"><a href="#如何自定义grains-item" class="headerlink" title="如何自定义grains.item"></a>如何自定义grains.item</h2><p>我们主要通过三种方式来自定义item。</p>
 <h3 id="编辑-etc-salt-minion文件"><a href="#编辑-etc-salt-minion文件" class="headerlink" title="编辑/etc/salt/minion文件"></a>编辑/etc/salt/minion文件</h3><p>我们可以通过更改minion配置文件的下列部分来设置item：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543840931981.png" alt="1543840931981"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543840931981.png?raw=true" alt="1543840931981"></p>
 <p>我这里把A上的该文件里的grains里的roles设置为apache。</p>
 <p>然后重启A上的salt-minion，通过如下命令来查看是否已经为A上的minion添加了key为roles的item。</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841097502.png" alt="1543841097502"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841097502.png?raw=true" alt="1543841097502"></p>
 <p>那么我们能用这个设置干些什么呢？</p>
 <p>我们可以指定item的key为roles，对应value值为apache的机器重启apache服务器：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841251626.png" alt="1543841251626"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841251626.png?raw=true" alt="1543841251626"></p>
 <h3 id="通过写-etc-salt-grains文件来配置grains"><a href="#通过写-etc-salt-grains文件来配置grains" class="headerlink" title="通过写/etc/salt/grains文件来配置grains"></a>通过写/etc/salt/grains文件来配置grains</h3><p>不过一般生产中的item并不写在minion的主配置文件里，我们一般写在/etc/salt/grains里。</p>
 <p>比如我们在A上的/etc/salt/grains文件里写入一下内容：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841361192.png" alt="1543841361192"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841361192.png?raw=true" alt="1543841361192"></p>
 <p>之后再重启A上的salt-minion，就可以查询到机器A的cloud值了：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841438056.png" alt="1543841438056"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841438056.png?raw=true" alt="1543841438056"></p>
 <p>但其实我们也可以通过<strong>执行如下命令来刷新grains，而不必重启salt-minion</strong>:</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841556219.png" alt="1543841556219"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841556219.png?raw=true" alt="1543841556219"></p>
 <p>同时，我们也可以在top.sls中利用grains来做目标选择：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543841912586.png" alt="1543841912586"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543841912586.png?raw=true" alt="1543841912586"></p>
 <p>这样我们就可以通过top.sls做分发执行的时候来选择所有roles值为apache的机器执行web.apache模板。</p>
 <p>那么有什么办法能模拟动态的Grains呢？</p>
 <h3 id="自定义Python脚本来影响grains"><a href="#自定义Python脚本来影响grains" class="headerlink" title="自定义Python脚本来影响grains"></a>自定义Python脚本来影响grains</h3><p>写一个Python脚本，返回一个字典就可以了。</p>
 <p>问题1：这个Python脚本放哪？</p>
 <p>答：到你配置的base环境里。</p>
 <p>以机器A为例，我们到A上salt-minion的base环境/srv/salt下创建一个_grains。然后把Python脚本放在里面。我们在/srv/salt/_grains目录下新建一个名为my_grains.py的python脚本文件：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543842797016.png" alt="1543842797016"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543842797016.png?raw=true" alt="1543842797016"></p>
 <p>注意我们现在是在salt-master的base环境上创建的此文件，我们需要把它推送到salt-minion上，我们需要在A上执行如下命令：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543842947462.png" alt="1543842947462"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543842947462.png?raw=true" alt="1543842947462"></p>
 <p>这个命令就把master上的自定义python脚本同步到了所有minion上。</p>
 <p>为了验证，我们在B上的/var/cache/salt/目录下执行tree命令：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543843129287.png" alt="1543843129287"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543843129287.png?raw=true" alt="1543843129287"></p>
 <p>可以看到my_grains.py已经推送至B上。</p>
 <p>接着我们在A上执行查询命令如下：</p>
-<p><img src="C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\1543843260537.png" alt="1543843260537"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543843260537.png?raw=true" alt="1543843260537"></p>
 <p>可以看到key为iaas的grains.item已经能在两台机器上的salt-minion查询到喽。</p>
 <p>最后，我们说一下grains的优先级。</p>
 <p>有四个地方可以影响到grains：</p>
