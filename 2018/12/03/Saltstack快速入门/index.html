@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-12-03</span>
-            <span class="time">13:43:53</span>
+            <span class="time">13:52:40</span>
           </span>
           
         </div>
@@ -141,14 +141,14 @@
 <li>在A上启动salt-master</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824697101.png?raw=true" alt="1543824697101"></p>
-<ol>
+<ol start="3">
 <li>配置A和B里的/etc/salt/minion文件，把master配置为主机A的IP地址，配置minion的ID（如果不配就是客户机的主机名）。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543824972970.png?raw=true" alt="1543824972970"></p>
 <p>​    如果不配置id，在A上执行systemctl start salt-minion后悔在/etc/salt下生成一个minion_id的文件，里面的内容就是A的主机名。</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543825260320.png?raw=true" alt="1543825260320"></p>
 <p>注意，minion_id是salt-minion起来的时候先读的文件，会覆盖/etc/salt/minion中的配置。但是不知道怎么回事，我这里还是显示id是IP地址。而且，salt的传输是通过aes加密通信的，不必考虑泄密。</p>
-<ol>
+<ol start="4">
 <li>salt-minion首次启动时会在/etc.salt目录下生成pki目录，我们可以通过tree命令来查看pki目录：</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826012701.png?raw=true" alt="1543826012701"></p>
@@ -156,7 +156,7 @@
 <p>具体的公钥内容：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826093070.png?raw=true" alt="1543826093070"></p>
 <p>在salt-minion启动时会把公钥发给minion-master服务器，这里就是A。</p>
-<ol>
+<ol start="5">
 <li>同样的，在salt-master端也会生成这么一对公私钥，同时还会存储salt-minion发来的私钥。如下图：</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826246684.png?raw=true" alt="1543826246684"></p>
@@ -170,14 +170,14 @@
 <p>我们还可以在A中使用salt-key命令来查看master端存储的客户端密钥的状态：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826795629.png?raw=true" alt="1543826795629"></p>
 <p>可以看出A、B两台机器上安装的salt-minion端都处于预备阶段。</p>
-<ol>
+<ol start="6">
 <li>我们在A上执行”salt-key -a minion端id” 来进行客户端主机id的接受。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543826974203.png?raw=true" alt="1543826974203"></p>
 <p>当然，此命令支持通配符，具体用法参看help。之后我们再执行此命令把192.168.43.103（A的IP地址）的ID也加进去。此时我们可以看到A的/etc/salt目录下的pki目录发生了变化：</p>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827155854.png?raw=true" alt="1543827155854"></p>
 <p>此时A中客户端的两个公钥已经转移到minions目录下，而./pki/minion目录下有了master的密钥文件minion_master.pub，这个文件也在B上存在。这说明master把自己的公钥发送给了minion。到这时，master端与minion端就可以加密通信了，认证过程（交换公钥过程）结束。</p>
-<ol>
+<ol start="7">
 <li>接下来我们在A上执行 <strong>salt ‘*’ test.ping</strong> 命令，test是一个模块，ping是一个方法，‘’里面的目标，是master端来检查minion是否可以正常工作的。</li>
 </ol>
 <p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543827677454.png?raw=true" alt="1543827677454"></p>
