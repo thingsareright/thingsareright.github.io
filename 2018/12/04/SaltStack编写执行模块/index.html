@@ -8,10 +8,10 @@
   <meta name="description" content="">
   <meta name="author" content="Erwin Smith">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="Erwin Smith">
+  <meta property="og:title" content="SaltStack编写执行模块">
   <meta property="og:description" content="">
   <meta property="og:site_name" content="Erwin Smith">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
   <meta property="og:image" content="http://yoursite.com">
   
     <link rel="alternate" href="/atom.xml" title="Erwin Smith" type="application/atom+xml">
@@ -35,8 +35,7 @@
 </head>
 
   <body>
-    <!-- Archive Header -->
-<!-- Page Header -->
+    <!-- Page Header -->
 
 
 <header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
@@ -44,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">Blog Archives</p>
+          <p class="title">SaltStack编写执行模块</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -89,74 +88,50 @@
   </div>
 </header>
 
-<!-- Archive List -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      
-        <div class="archive-item">
-  <a href="/2018/12/04/SaltStack数据系统pillar/" class="post-title">
-    SaltStack数据系统pillar
-  </a>
-  <div class="date text-muted">Posted on 2018-12-04 13:32:46</div>
-</div>
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By Erwin Smith</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2018-12-04</span>
+            <span class="time">13:40:56</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
 
-      
-        <div class="archive-item">
-  <a href="/2018/12/04/SaltStack编写执行模块/" class="post-title">
-    SaltStack编写执行模块
-  </a>
-  <div class="date text-muted">Posted on 2018-12-04 13:32:33</div>
-</div>
+<a class="tag" href="/tags/运维笔记/">#运维笔记</a>
 
-      
-        <div class="archive-item">
-  <a href="/2018/12/04/深入学习saltstack远程执行/" class="post-title">
-    深入学习saltstack远程执行
-  </a>
-  <div class="date text-muted">Posted on 2018-12-04 13:32:09</div>
-</div>
 
-      
-        <div class="archive-item">
-  <a href="/2018/12/03/SaltStack数据系统Grains/" class="post-title">
-    SaltStack数据系统Grains
-  </a>
-  <div class="date text-muted">Posted on 2018-12-03 21:54:44</div>
-</div>
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h1 id="SaltSack编写执行模块"><a href="#SaltSack编写执行模块" class="headerlink" title="SaltSack编写执行模块"></a>SaltSack编写执行模块</h1><p>这篇文章接着上篇文章。</p>
+<h2 id="放哪？"><a href="#放哪？" class="headerlink" title="放哪？"></a>放哪？</h2><p>我们在装有salt-master的机器的/srv/salt/目录下创建_modules目录，在这个目录下可以放置自定义模块。</p>
+<p>比如我们在A机器上创建/srv/salt/_modules目录，并在此目录下创建my_disk.py文件，该文件内容如下：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543900508071.png?raw=true?raw=true" alt="1543900508071"></p>
+<p>之后在A上刷新模块：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543900587267.png?raw=true?raw=true" alt="1543900587267"></p>
+<p>刷新后这个py文件就会放置到A和B两台机器的/var/cache/salt/minion/extmods相关路径下：<img src="https://github.com/thingsareright/picture/blob/master/picture/1543900656113.png?raw=true?raw=true" alt="1543900656113"></p>
+<p>之后我们在A下执行此模块：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543900727364.png?raw=true?raw=true" alt="1543900727364"></p>
+<p>可以看到自定义模块导入成功。</p>
 
-      
-        <div class="archive-item">
-  <a href="/2018/12/03/Saltstack快速入门/" class="post-title">
-    Saltstack快速入门
-  </a>
-  <div class="date text-muted">Posted on 2018-12-03 21:53:44</div>
-</div>
-
-      
-        <div class="archive-item">
-  <a href="/2018/12/03/MBR-GPT-BIOS-UEFI解析/" class="post-title">
-    MBR_GPT_BIOS_UEFI解析
-  </a>
-  <div class="date text-muted">Posted on 2018-12-03 11:53:38</div>
-</div>
-
-      
-
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<!-- Pagination -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-10 col-md-10 col-md-offset-1">
-      <ul class="pagination">
-          
-          
-      </ul>
-    </div>
-  </div>
-</div>
+</article>
 
 
 

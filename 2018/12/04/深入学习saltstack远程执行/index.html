@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Erwin Smith">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="深入学习saltstack远程执行">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Erwin Smith">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="Erwin Smith" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>Erwin Smith</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/css/style.light.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">深入学习saltstack远程执行</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/thingsareright">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:maxthingsareright@gmail.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By Erwin Smith</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2018-12-04</span>
+            <span class="time">13:40:56</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/tags/运维笔记/">#运维笔记</a>
+
+
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h1 id="SaltStack远程执行"><a href="#SaltStack远程执行" class="headerlink" title="SaltStack远程执行"></a>SaltStack远程执行</h1><p>这篇文章接着上篇文章讲。</p>
+<h2 id="简要介绍"><a href="#简要介绍" class="headerlink" title="简要介绍"></a>简要介绍</h2><p>以下面所示代码为例，粗略的讲一下远程执行的几个涉及到的部分：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">salt  '*'  cmd.run 'w'</span><br></pre></td></tr></table></figure>
+<p>命令： salt</p>
+<p>目标： ‘*’                                    支持and， or</p>
+<p>模块： cmd.run                        自带150+模块，也可以自定义模块</p>
+<p>返回： 执行后结果的返回，由Returnners组件来做。</p>
+<p>我们依次讲解以上内容。</p>
+<h2 id="如何选择目标"><a href="#如何选择目标" class="headerlink" title="如何选择目标"></a>如何选择目标</h2><p>目标有两种定位方式：</p>
+<ol>
+<li>和minion_id有关；</li>
+<li>和minion_id无关；</li>
+</ol>
+<h3 id="和minion-id有关的方法"><a href="#和minion-id有关的方法" class="headerlink" title="和minion_id有关的方法"></a>和minion_id有关的方法</h3><ol>
+<li>直接指定一个minion_id;</li>
+<li>使用通配符；</li>
+</ol>
+<p>在机器A上的示例代码如下：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543893916372.png?raw=true" alt="1543893916372"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543893928832.png?raw=true" alt="1543893928832"></p>
+<ol>
+<li>列表，使用 -L 参数在机器A上的示例代码如下：</li>
+</ol>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543894032272.png?raw=true" alt="1543894032272"></p>
+<ol>
+<li>正则表达式，使用 -E 参数，在机器A上示例代码如下：</li>
+</ol>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543894111887.png?raw=true" alt="1543894111887"></p>
+<p>注意：这些方式都可以用在top file里来指定目标。</p>
+<p>主机名设置（minion_id）设置方案：</p>
+<ol>
+<li>IP地址；</li>
+<li>根据业务来进行设置；</li>
+</ol>
+<p>如：redis-node1-redis04-idc04-soa.example.com</p>
+<h3 id="和minion-id无关的方法"><a href="#和minion-id无关的方法" class="headerlink" title="和minion_id无关的方法"></a>和minion_id无关的方法</h3><h4 id="1-利用IP地址或子网，二者都是使用-S-参数，在机器A上执行的代码如下。"><a href="#1-利用IP地址或子网，二者都是使用-S-参数，在机器A上执行的代码如下。" class="headerlink" title="1.利用IP地址或子网，二者都是使用  -S 参数，在机器A上执行的代码如下。"></a>1.利用IP地址或子网，二者都是使用  -S 参数，在机器A上执行的代码如下。</h4><p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543894672592.png?raw=true" alt="1543894672592"></p>
+<h4 id="2-使用分组"><a href="#2-使用分组" class="headerlink" title="2. 使用分组"></a>2. 使用分组</h4><p>在A上的/etc/salt/master里设置nodegroup系列参数：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543894889342.png?raw=true" alt="1543894889342"></p>
+<p>之后重启A上的salt-master。之后就可以在A上使用 salt -N 命令来选择控制web组的机器了：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543895003244.png?raw=true" alt="1543895003244"></p>
+<p>此外还可以利用grains，pillar和混合匹配来选择目标，详见<a href="http://docs.saltstack.cn/#demo-environments" target="_blank" rel="noopener">官方文档</a>。</p>
+<h2 id="选择什么模块"><a href="#选择什么模块" class="headerlink" title="选择什么模块"></a>选择什么模块</h2><p>salt的<a href="http://docs.saltstack.cn/ref/index.html" target="_blank" rel="noopener">自带模块</a>。</p>
+<p>我们可以到A的/usr/lib/python2.7/site-packages/salt/modules/目录下查看现在salt-master有哪些自带的模块。</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543895971707.png?raw=true" alt="1543895971707"></p>
+<p>我们可以在这个目录下仿照这些文件进行二次开发。借助这些东西，我们可以实现多种多样的功能。</p>
+<h2 id="返回程序"><a href="#返回程序" class="headerlink" title="返回程序"></a>返回程序</h2><p>我们可以把minion的返回数据重定向到其它地方。注意这是minion直接返回的，比如我们想把返回数据写到mysql里，不是从minion返回给master然后master把数据写到数据库的，而是minion直接返回到mysql里。</p>
+<p>我们假设想让B机器的返回结果返回到A的mysql里，那么要在B上安装python连接mysql的库。</p>
+<p>我们先在A上使用salt远程控制B安装python连接mysql所用到的库：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543897120159.png?raw=true" alt="1543897120159"></p>
+<p>可以看到A上salt-master所控制的所有minion机器都已经安装好了。</p>
+<p>之后，我们需要在A上的mysql里建表，建表语句如下（截取自<a href="http://docs.saltstack.cn/ref/returners/all/salt.returners.mysql.html#module-salt.returners.mysql" target="_blank" rel="noopener">官方文档</a>）：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span>  <span class="string">`salt`</span></span><br><span class="line">  <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8</span><br><span class="line">  <span class="keyword">DEFAULT</span> <span class="keyword">COLLATE</span> utf8_general_ci;</span><br><span class="line"></span><br><span class="line"><span class="keyword">USE</span> <span class="string">`salt`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- Table structure for table `jids`</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`jids`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`jids`</span> (</span><br><span class="line">  <span class="string">`jid`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`load`</span> mediumtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`jid`</span> (<span class="string">`jid`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> jid <span class="keyword">ON</span> jids(jid) <span class="keyword">USING</span> BTREE;</span><br><span class="line"></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- Table structure for table `salt_returns`</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`salt_returns`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`salt_returns`</span> (</span><br><span class="line">  <span class="string">`fun`</span> <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`jid`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`return`</span> mediumtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`success`</span> <span class="built_in">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`full_ret`</span> mediumtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`alter_time`</span> <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`id`</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`jid`</span> (<span class="string">`jid`</span>),</span><br><span class="line">  <span class="keyword">KEY</span> <span class="string">`fun`</span> (<span class="string">`fun`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br><span class="line"></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"><span class="comment">-- Table structure for table `salt_events`</span></span><br><span class="line"><span class="comment">--</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`salt_events`</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`salt_events`</span> (</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">BIGINT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line"><span class="string">`tag`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`data`</span> mediumtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`alter_time`</span> <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line"><span class="string">`master_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line"><span class="keyword">KEY</span> <span class="string">`tag`</span> (<span class="string">`tag`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+<p>之后我们还需要授权用户：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543898044757.png?raw=true" alt="1543898044757"></p>
+<p>之后我们在B上用salt数据库账号尝试远程登录B上的MySQL数据库，结果成功登录。</p>
+<p>!<img src="https://github.com/thingsareright/picture/blob/master/picture/1543898537368.png?raw=true" alt="1543898537368"></p>
+<p>之后更改B上的minion配置文件，更改/etc/salt/minion文件的MySQL相关内容：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543898702950.png?raw=true" alt="1543898702950"></p>
+<p>之后在B上重启salt-minion。</p>
+<p>之后在B上使用tail来查看minion的日志（/var/log/salt/minion）：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543898954185.png?raw=true" alt="1543898954185"></p>
+<p>这时A下mysql的salt数据库应该是空的：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543899034869.png?raw=true" alt="1543899034869"></p>
+<p>之后我们在A上执行:</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543899082420.png?raw=true" alt="1543899082420"></p>
+<p>我们再来看A上的salt数据库：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543899199911.png?raw=true" alt="1543899199911"></p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        </p><p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Erwin Smith">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="SaltStack数据系统pillar">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Erwin Smith">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="Erwin Smith" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>Erwin Smith</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/css/style.light.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">SaltStack数据系统pillar</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/thingsareright">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:maxthingsareright@gmail.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By Erwin Smith</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2018-12-04</span>
+            <span class="time">13:40:56</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/tags/运维笔记/">#运维笔记</a>
+
+
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h1 id="SaltStack数据系统Pillar"><a href="#SaltStack数据系统Pillar" class="headerlink" title="SaltStack数据系统Pillar"></a>SaltStack数据系统Pillar</h1><p>这篇文章是接着<a href="https://thingsareright.github.io/2018/12/03/SaltStack%E6%95%B0%E6%8D%AE%E7%B3%BB%E7%BB%9FGrains/" target="_blank" rel="noopener">这篇文章</a>讲的。</p>
+<p>Pillar是动态的，需要给特定的minion指定特定的数据（这与top file起的作用几乎是一样的）。</p>
+<p>只有指定的minion自己能看到自己的数据，这样的话Pillar比较安全，可以用于指定用户名和密码等敏感数据。</p>
+<p>故pillar有两个作用：</p>
+<ol>
+<li>存放敏感性数据；</li>
+<li>进行变量存储，进而实现配置的变量化；</li>
+</ol>
+<p>要注意的是，系统自带的pillar的item项默认是不显示的，如下图所示，在默认配置下在A上查询A、B两台机器的pillar会显示空白：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543889690728.png?raw=true" alt="1543889690728"></p>
+<p>我们需要到A的/etc/salt/master配置文件里把pillar_opts配置项改为True，如下图所示：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543889794290.png?raw=true" alt="1543889794290"></p>
+<p>之后重启A上的salt-master，再执行查询命令就可以查到一些系统自带的pillar值了：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543889969989.png?raw=true" alt="1543889969989"></p>
+<p>因为查询出来的东西太多了，所以我就把A上master配置文件里的该选项又设置为False，并再次重启A上的salt-master了。那么我们如何自定义自己的pillar呢？</p>
+<h2 id="自定义pillar"><a href="#自定义pillar" class="headerlink" title="自定义pillar"></a>自定义pillar</h2><p>我们可以通过以下方式来自定义pillar的item。</p>
+<h3 id="通过编写sls文件来自定义pillar项"><a href="#通过编写sls文件来自定义pillar项" class="headerlink" title="通过编写sls文件来自定义pillar项"></a>通过编写sls文件来自定义pillar项</h3><p>那么sls文件写在哪呢？我们查看A上/etc/salt/master配置文件，修改其中pillar_roots配置项：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543890454643.png?raw=true" alt="1543890454643"></p>
+<p>这里就指定了pillar的base环境的配置文件的存放位置。之后创建此目录并重启A上的salt-master。我在A上创建/srv/pillar/web/apache.sls文件，并为之写入以下内容：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543890970035.png?raw=true" alt="1543890970035"></p>
+<p>我们可以在此配置文件里使用grains作为条件</p>
+<p>下面我们需要在A的/srv/pillar下写top.sls文件，内容如下：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543891306162.png?raw=true" alt="1543891306162"></p>
+<p>之后我们在A上执行刷新pillar和查询pillar的命令：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543891568642.png?raw=true" alt="1543891568642"></p>
+<p>我们可以看到A的上面已经有了pillar.apache而B上是没有的。</p>
+<p>更一般化的，我们还可以设置层级，比如我们更改A上的/srv/pillar/web/apache.sls文件内容如下：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543891763874.png?raw=true" alt="1543891763874"></p>
+<p>之后再在A上执行刷新和查看pillar的指令，结果如下图：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543891829761.png?raw=true" alt="1543891829761"></p>
+<p>可以看到实现了pillar的层级化。</p>
+<p>之后我为了后续实验方便，又撤销了此次更改。</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543891980993.png?raw=true" alt="1543891980993"></p>
+<h2 id="pillar使用场景"><a href="#pillar使用场景" class="headerlink" title="pillar使用场景"></a>pillar使用场景</h2><h3 id="目标选择"><a href="#目标选择" class="headerlink" title="目标选择"></a>目标选择</h3><p>我们可以在A上执行下列命令来执行利用pillar的目标选择：</p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543892113808.png?raw=true" alt="1543892113808"></p>
+<p><img src="https://github.com/thingsareright/picture/blob/master/picture/1543892162366.png?raw=true" alt="1543892162366"></p>
+<h2 id="grains和pillar对比"><a href="#grains和pillar对比" class="headerlink" title="grains和pillar对比"></a>grains和pillar对比</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>数据采集方式</th>
+<th>应用场景</th>
+<th>定义位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grains</td>
+<td>静态</td>
+<td>minion启动时收集</td>
+<td>数据查询、目标选择、配置管理</td>
+<td>minion</td>
+</tr>
+<tr>
+<td>Pillar</td>
+<td>动态</td>
+<td>master自定义</td>
+<td>目标选择、配置管理、敏感数据</td>
+<td>master</td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        </p><p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+
